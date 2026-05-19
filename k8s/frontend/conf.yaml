@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: team-a-middleware
+data:
+  default.conf: |
+    server {
+      listen 8080 default_server;
+      server_name _;
+
+      # OpenShift required temp paths
+      client_body_temp_path /tmp/client_temp;
+      proxy_temp_path       /tmp/proxy_temp;
+      fastcgi_temp_path     /tmp/fastcgi_temp;
+      uwsgi_temp_path       /tmp/uwsgi_temp;
+      scgi_temp_path        /tmp/scgi_temp;
+
+      location / {
+        root /usr/share/nginx/html;
+        index index.html;
+        try_files $uri /index.html;
+      }
+
+      location /api/ {
+        proxy_pass http://leave-app:8000/;
+      }
+    }

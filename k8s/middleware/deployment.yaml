@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kanban-api
+  namespace: middleware-ns
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kanban-api
+  template:
+    metadata:
+      labels:
+        app: kanban-api
+    spec:
+      containers:
+      - name: api
+        image: gangadhariy/kanban:v2
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: api-config
+              key: DB_HOST
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD

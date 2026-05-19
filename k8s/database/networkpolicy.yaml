@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-middleware
+  namespace: team-a-database
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: middleware-ns
+      podSelector:
+        matchLabels:
+          app: kanban-api
+
+  policyTypes:
+  - Ingress

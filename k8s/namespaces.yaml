@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: frontend-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: middleware-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: database-ns
