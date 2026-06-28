@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kanban-api
-  namespace: middleware-ns
+  namespace: middleware
 spec:
   replicas: 3
   selector:
@@ -22,10 +22,29 @@ spec:
         - name: DB_HOST
           valueFrom:
             configMapKeyRef:
-              name: api-config
+              name: postgres-config
               key: DB_HOST
+
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: DB_PORT
+
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: DB_NAME
+
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: username
+
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: postgres-secret
-              key: POSTGRES_PASSWORD
+              key: password

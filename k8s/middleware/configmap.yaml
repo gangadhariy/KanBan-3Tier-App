@@ -1,7 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: api-config
-  namespace: team-a-database
+  name: postgres-config
+  namespace: middleware
 data:
-  DB_HOST: postgres.team-a-database.svc.cluster.local
+  DB_HOST: postgres-cluster-rw.database.svc.cluster.local
+  DB_PORT: "5432"
+  DB_NAME: appdb
