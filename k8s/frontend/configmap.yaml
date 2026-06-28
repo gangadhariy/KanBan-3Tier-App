@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx-config
-  namespace: frontend-ns
+  namespace: frontend
 data:
   default.conf: |
     server {
@@ -15,6 +15,6 @@ data:
       }
 
       location /api/ {
-          proxy_pass http://kanban-api:8000/;
+          proxy_pass http://kanban-api.middleware.svc.cluster.local:8000/;
       }
     }
