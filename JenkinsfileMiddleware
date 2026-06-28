@@ -1,0 +1,60 @@
+pipeline {
+    agent {
+        label 'agent'
+    }
+    tools {
+        maven 'Maven3'
+    }
+    environment {
+        DOCKER_IMAGE = "gangadhariy/kanban-middleware"
+    }
+    stages {
+        stage('Docker Build') {
+            steps {
+                sh '''
+                    cd middleware
+                    docker build -t ${DOCKER_IMAGE}:${BUILD_ID} .
+                   '''
+            }
+        }
+        stage('Scan Docker Image') {
+            steps {
+                sh 'trivy image --severity HIGH,CRITICAL --exit-code 1 ${DOCKER_IMAGE}:${BUILD_ID}'
+            }
+        }
+        stage('Docker push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'Docker-Creds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USER')]) {
+                    sh '''
+                        echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USER} --password-stdin
+                        docker push ${DOCKER_IMAGE}:${BUILD_ID}
+                       ''' 
+            }
+            }
+        }
+        stage('Edit the image version in Frontend argo manifest repo') {
+            steps {
+                withCredentials([string(credentialsId: 'Github_token', variable: 'GITHUB_TOKEN')]) {
+                    sh '''
+                        git clone https://github.com/gangadhariy/Argo-Rollout-Repo.git
+                        cd Argo-Rollout-Repo/Applications/Kanban-api-BG/middleware
+                        git config user.name "github-actions"
+                        git config user.email "github-actions@github.com"
+                        sed -i "s|image: .*|image: ${DOCKER_IMAGE}:${BUILD_ID}|" rollout.yaml
+                        git add .
+                        git diff --cached --quiet || git commit -m "Update middleware image to ${BUILD_ID}"
+                        git push https://${GITHUB_TOKEN}@github.com/gangadhariy/Argo-Rollout-Repo.git HEAD:main
+                       '''
+            }
+            }
+        }
+    }
+    post {
+        success {
+            cleanWs()
+        }
+        failure {
+            cleanWs()
+        }
+    }
+}
