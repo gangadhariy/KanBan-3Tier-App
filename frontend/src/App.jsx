@@ -55,7 +55,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1>🚀 Mini Kanban</h1>
+      <h1>🚀 Mini Kanban App</h1>
 
       <TaskForm onAdd={addTask} />
 
