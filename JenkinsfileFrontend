@@ -3,9 +3,9 @@ pipeline {
         label 'agent'
     }
 
-    tools {
-        sonarScanner 'sonar-sc-1'
-    }
+    // tools {
+    //     sonarScanner 'sonar-sc-1'
+    // }
 
     environment {
         // Sonarqube url
@@ -23,6 +23,7 @@ pipeline {
 
         stage('SonarQube Scan') {
             steps {
+                def scannerHome = tool 'sonar-sc-1'
                 withCredentials([
                     string(credentialsId: 'Sonar_Token', variable: 'SONAR_TOKEN'),
                 ]) {
