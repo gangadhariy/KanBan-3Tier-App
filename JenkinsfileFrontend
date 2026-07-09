@@ -60,6 +60,7 @@ pipeline {
                       --format json \
                       -o trivy-report.json \
                       ${DOCKER_IMAGE}:${BUILD_ID}
+                      ls -lrt
                 '''
             }
         }
