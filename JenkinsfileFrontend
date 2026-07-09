@@ -27,7 +27,7 @@ pipeline {
                     def scannerHome = tool name: 'sonar-sc-1', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
 
                     withCredentials([
-                        string(credentialsId: 'Sonar_Token', variable: 'SONAR_TOKEN')
+                        string(credentialsId: 'Sonar-Token', variable: 'SONAR_TOKEN')
                     ]) {
                         sh """
                             cd frontend
